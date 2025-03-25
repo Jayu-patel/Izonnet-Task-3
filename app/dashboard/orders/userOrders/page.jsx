@@ -14,8 +14,10 @@ export default function MyOrders() {
   const [currentOrder, setCurrentOrder] = useState("")
 
   const handlePayment =async(payId,orderId) => {
-    document.cookie = `paymentId=${payId}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
-    document.cookie = `orderId=${orderId}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+    if (typeof window !== "undefined"){
+      document.cookie = `paymentId=${payId}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+      document.cookie = `orderId=${orderId}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+    }
     const stripe = await loadStripe("pk_test_51QqtgFFWZDwZ5XVYvXoNrRonDmGAsCF4boAiMQSL6iYXJjuEFqX3Y3fvl6AGNeReg9rMc2YnjUSYH9MYKlHGXYFO00mqgYE5BA")
     const result = stripe.redirectToCheckout({
       sessionId: payId
@@ -34,7 +36,9 @@ export default function MyOrders() {
     }
     else{
       const {orderItems} = order
-      document.cookie = `orderId=${orderId}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+      if (typeof window !== "undefined"){
+        document.cookie = `orderId=${orderId}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+      }
 
       const stripe = await loadStripe("pk_test_51QqtgFFWZDwZ5XVYvXoNrRonDmGAsCF4boAiMQSL6iYXJjuEFqX3Y3fvl6AGNeReg9rMc2YnjUSYH9MYKlHGXYFO00mqgYE5BA")
 
@@ -44,8 +48,11 @@ export default function MyOrders() {
 
       // axios.post(`http://localhost:8000/api/stripe/check-out`, body).then(res=>{
       axios.post(`/api/stripe`, body).then(res=>{
-  
-        const orderId = document.cookie.split("; ").find((row) => row.startsWith("orderId="))?.split("=")[1];
+
+        let orderId
+        if (typeof window !== "undefined"){
+          orderId = document.cookie.split("; ").find((row) => row.startsWith("orderId="))?.split("=")[1];
+        }
         // axios.put(`http://localhost:8000/api/order/setPaymentId/${orderId}`, {payId: res.data.id}).catch(err=>console.log(err))
         axios.put(`/api/order/payment?id=${orderId}}&paymentId=${res?.data?.id}`).catch(err=>console.log(err))
         const result = stripe.redirectToCheckout({
@@ -53,7 +60,9 @@ export default function MyOrders() {
         })
         .catch(err=>{})
 
-        document.cookie = `paymentId=${res.data?.id}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+        if (typeof window !== "undefined"){
+          document.cookie = `paymentId=${res.data?.id}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+        }
 
         if(result.error){console.log(result.error)}
       })

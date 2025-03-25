@@ -1,4 +1,5 @@
 "use client";
+import { nextLocalStorage } from "@/app/lib/nextLocalStorage";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -27,7 +28,7 @@ const GenerateOTP = () => {
       if(res.status == 201){
         router.push(`/login/confirmOtp`)
         toast.success("OTP sent to your email!");
-        localStorage.setItem("email", email)
+        nextLocalStorage()?.setItem("email", email)
       }
       else{
         toast.error(res.data.message);

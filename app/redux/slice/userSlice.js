@@ -1,8 +1,9 @@
+import { nextLocalStorage } from '@/app/lib/nextLocalStorage';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  userInfo: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
+  userInfo: nextLocalStorage()?.getItem("user")
+    ? JSON.parse(nextLocalStorage()?.getItem("user"))
     : null,
 }
 
@@ -12,14 +13,14 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action) => {
       state.userInfo = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      nextLocalStorage()?.setItem("user", JSON.stringify(action.payload));
 
       const expirationTime = new Date().getTime() + 30 * 24 * 60 * 60 * 1000; // 30 days
-      localStorage.setItem("expirationTime", expirationTime);
+      nextLocalStorage()?.setItem("expirationTime", expirationTime);
     },
     logout: (state) => {
       state.userInfo = null;
-      localStorage.removeItem("user")
+      nextLocalStorage()?.removeItem("user")
     },
   },
 });

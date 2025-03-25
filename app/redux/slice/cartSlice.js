@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { updateCart } from "../../utils/cartUtils";
 import { toast } from "react-toastify";
+import { nextLocalStorage } from "@/app/lib/nextLocalStorage";
 
-const initialState = localStorage.getItem("cart")
-  ? JSON.parse(localStorage.getItem("cart"))
+const initialState = nextLocalStorage()?.getItem("cart")
+  ? JSON.parse(nextLocalStorage()?.getItem("cart"))
   : { cartItems: []};
 
 const cartSlice = createSlice({
@@ -47,7 +48,7 @@ const cartSlice = createSlice({
 
     clearCartItems: (state, action) => {
       state.cartItems = [];
-      localStorage.setItem("cart", JSON.stringify(state));
+      nextLocalStorage()?.setItem("cart", JSON.stringify(state));
     },
 
     resetCart: (state) => {state.cartItems = []},

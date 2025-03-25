@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { nextLocalStorage } from "@/app/lib/nextLocalStorage";
 
 export default function ConfirmOtp() {
-  const email = localStorage.getItem("email")
+  const email = nextLocalStorage()?.getItem("email")
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();

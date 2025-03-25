@@ -6,9 +6,12 @@ import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 export default function PaymentSuccessful() {
-  
-  const orderId = document.cookie.split("; ").find((row) => row.startsWith("orderId="))?.split("=")[1];
-  const paymentId = document.cookie.split("; ").find((row) => row.startsWith("paymentId="))?.split("=")[1];
+  let orderId
+  let paymentId
+  if (typeof window !== "undefined"){
+    orderId = document.cookie.split("; ").find((row) => row.startsWith("orderId="))?.split("=")[1];
+    paymentId = document.cookie.split("; ").find((row) => row.startsWith("paymentId="))?.split("=")[1];
+  }
   useEffect(()=>{
     console.log(orderId,paymentId)
     if(paymentId){
@@ -18,8 +21,10 @@ export default function PaymentSuccessful() {
           alert(orderId)
           axios.post(`/api/order/payment`,{id: orderId}).then(res=>{
             if(res.status == 201){
-              document.cookie = "orderId=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC"
-              document.cookie = "paymentId=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC"
+              if (typeof window !== "undefined"){
+               document.cookie = "orderId=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC"
+               document.cookie = "paymentId=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC"
+              }
             }
           })
           .catch(err=>{toast.error(err?.response?.data?.message)})

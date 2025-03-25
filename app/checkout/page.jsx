@@ -41,8 +41,10 @@ export default function Checkout() {
 
     // axios.post(`http://localhost:8000/api/stripe/check-out`, body).then(res=>{
     axios.post(`/api/stripe`, body).then(res=>{
-
-      const orderId = document.cookie.split("; ").find((row) => row.startsWith("orderId="))?.split("=")[1];
+      let orderId
+      if (typeof window !== "undefined"){
+        orderId = document.cookie.split("; ").find((row) => row.startsWith("orderId="))?.split("=")[1];
+      }
       // axios.put(`http://localhost:8000/api/order/setPaymentId/${orderId}`, {
       axios.put(`/api/order/payment?id=${orderId}&paymentId=${res?.data?.id}`).catch(err=>console.log(""))
 
@@ -52,7 +54,9 @@ export default function Checkout() {
 
       setLoading(false)
       dispatch(clearCartItems())
-      document.cookie = `paymentId=${res.data?.id}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+      if (typeof window !== "undefined"){
+        document.cookie = `paymentId=${res.data?.id}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+      }
 
       if(result.error){console.log(result.error)}
     })
@@ -98,7 +102,9 @@ export default function Checkout() {
       zip,
       total: getTotalPrice()
     }).then(res => {
-      document.cookie = `orderId=${res?.data?._id}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+      if (typeof window !== "undefined"){
+        document.cookie = `orderId=${res?.data?._id}; path=/; max-age=${5 * 60}; SameSite=Strict;"`;
+      }
     })
     .catch(err=>{
       toast.error(err?.response?.data?.message)

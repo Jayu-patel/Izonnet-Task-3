@@ -12,7 +12,7 @@ export default function Profile(){
     const {userInfo} = useSelector(state=>state?.auth) || ""
     const dispatch = useDispatch()
     const router = useRouter();
-    const cookieValue = document.cookie.split("; ").find((row) => row.startsWith("jwtAdmin="))?.split("=")[1];
+    // const cookieValue = document.cookie.split("; ").find((row) => row.startsWith("jwtAdmin="))?.split("=")[1];
     const [loading, setLoading] = useState(false)
 
     const logoutFun = ()=>{

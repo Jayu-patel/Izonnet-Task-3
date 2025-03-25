@@ -3,12 +3,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { nextLocalStorage } from "@/app/lib/nextLocalStorage";
 
 export default function UpdatePassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const email = localStorage.getItem("email")
+  const email = nextLocalStorage()?.getItem("email")
   const router = useRouter();
 
   const handleUpdate = () => {
