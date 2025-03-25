@@ -18,7 +18,6 @@ export default function PaymentSuccessful() {
       // axios.get(`http://localhost:8000/api/stripe/verify-payment/${paymentId}`).then(res=>{
       axios.post(`/api/stripe/${paymentId}`).then(res=>{
         if(res.data.status == "paid"){
-          alert(orderId)
           axios.post(`/api/order/payment`,{id: orderId}).then(res=>{
             if(res.status == 201){
               if (typeof window !== "undefined"){
