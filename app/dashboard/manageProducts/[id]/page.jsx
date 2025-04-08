@@ -139,11 +139,11 @@ export default function ProductUpdate({params}){
             <div className="w-full py-4">
                 <h1 className="text-center text-[1.5rem] font-bold">Edit Product</h1>
             </div>
-            <div className="flex h-screen">
+            <div className="flex h-screen medium:flex-col medium:my-2">
                 <div className="flex-[2] w-full h-full">
                     <div className="w-[95%] mt-5 bg-white mx-auto relative">
                         <input
-                            className="absolute z-10 w-full h-full opacity-0 cursor-pointer"
+                            className="absolute z-[5] w-full h-full opacity-0 cursor-pointer"
                             type="file" 
                             accept="image/*" 
                             name="image" 
@@ -290,7 +290,7 @@ export default function ProductUpdate({params}){
 
                         <button
                             onClick={handleSubmit}
-                            className="mt-4 py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            className="mt-4 py-2 px-4 medium:mb-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
                             Update Product
                         </button>

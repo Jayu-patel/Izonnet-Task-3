@@ -107,7 +107,7 @@ export default function MyOrders() {
               className="border p-4 rounded-lg shadow-lg bg-white"
             >
               <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-semibold">Order ID: {order._id ?? ""}</h2>
+                <h2 className="small:hidden text-lg font-semibold">Order ID: {order._id ?? ""}</h2>
                 <span
                   className={`px-3 py-1 text-sm font-bold rounded-full ${
                     order.isPaid ? "bg-green-500 text-white" : "bg-red-500 text-white"

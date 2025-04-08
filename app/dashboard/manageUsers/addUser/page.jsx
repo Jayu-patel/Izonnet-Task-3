@@ -66,8 +66,8 @@ export default function AddUser(){
         })
     }
     return(
-        <div className="flex items-center justify-center w-full h-screen mt-[-64px] bg-gray-100">
-            <div className="w-full max-w-md p-6 bg-white shadow-md rounded-lg">
+        <div className="flex items-center justify-center w-full h-screen mt-[-64px] bg-gray-100 medium:block medium:mt-0">
+            <div className="w-full max-w-md p-6 bg-white shadow-md rounded-lg medium:max-w-[calc(100vw-56px)] medium:h-screen">
                 <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Add User</h2>
                 <div className="space-y-4">
                 <div>

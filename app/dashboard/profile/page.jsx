@@ -87,8 +87,8 @@ export default function Profile(){
                         /> </> : <></>
                 }
 
-                <div className="mt-5">
-                    <button className="bg-black text-white px-4 py-2 rounded-lg mr-2" onClick={()=>{router.push("/dashboard/profile/updateProfile")}}>Update Account</button>
+                <div className="mt-5 medium:flex medium:flex-col">
+                    <button className="bg-black text-white px-4 py-2 rounded-lg mr-2 medium:mb-2" onClick={()=>{router.push("/dashboard/profile/updateProfile")}}>Update Account</button>
                     
                     {
                         loading ?

@@ -24,8 +24,8 @@ export async function POST(req){
             payment_method_types: ["card"],
             line_items: items,
             mode: "payment",
-            success_url: `https://izonnet-task-3.vercel.app/payment-success`,
-            cancel_url: `https://izonnet-task-3.vercel.app/payment-cancel`,
+            success_url: `http://localhost:3000/payment-success`,
+            cancel_url: `http://localhost:3000/payment-cancel`,
         })
         return NextResponse.json({id: session.id}, { status: 201 });
     } 
