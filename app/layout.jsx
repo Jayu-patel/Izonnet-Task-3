@@ -31,9 +31,9 @@ export default function RootLayout({ children }) {
         <ToastContainer/>
         <ReduxProvider>
           <nav className="flex px-4 py-3 bg-gray-800 text-white sticky top-0 z-50">
-              <Link href={"/"} className="flex-[1] font-extrabold text-[1.7rem] ml-2 font-sans">SnapBuy</Link>
+              <Link href={"/"} className="flex-[1] font-extrabold text-[1.7rem] medium:text-[1.4rem] ml-2 font-sans">SnapBuy</Link>
               {/* <div className="flex-[1] font-extrabold text-[1.5rem] ml-2">LOGO</div> */}
-            <div className="flex-[1] flex flex-row-reverse list-none">
+            <div className="flex-[1] flex flex-row-reverse list-none medium:text-[0.9rem]">
               <LoginButton/>
               <Link className="px-4 my-auto" href={'/productCart'}><CartCount/></Link>
               <Link className="px-4 my-auto" href={'/shop'}>Shop</Link>

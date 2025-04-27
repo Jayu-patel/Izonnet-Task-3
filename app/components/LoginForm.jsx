@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useDispatch } from "react-redux"; 
 import { setCredentials } from "../redux/slice/userSlice";
-import { toast } from "react-toastify";
 
 export default function LoginForm(){
     const [email, setEmail] = useState("");
@@ -63,8 +62,8 @@ export default function LoginForm(){
       };
     
     return(
-    <div className="grid place-items-center h-[calc(100vh-64px)]">
-      <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400">
+    <div className="grid place-items-center h-[calc(100vh-64px)] medium:block medium:mt-12">
+      <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400 medium:w-[90%] mx-auto">
         <h1 className="text-xl font-bold my-4">Login</h1>
 
         <div className="flex flex-col gap-3">

@@ -62,8 +62,8 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="grid place-items-center h-[calc(100vh-64px)]">
-      <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400">
+    <div className="grid place-items-center h-[calc(100vh-64px)] medium:block medium:mt-12">
+      <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400 medium:w-[90%] mx-auto">
         <h1 className="text-xl font-bold my-4">Register</h1>
 
         <div className="flex flex-col gap-3">

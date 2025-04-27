@@ -1,6 +1,5 @@
 "use client"
 
-import LoadingOverlay from "@/app/components/Loader2"
 import Loader3 from "@/app/components/Loader3"
 import axios from "axios"
 import { useEffect, useState } from "react"

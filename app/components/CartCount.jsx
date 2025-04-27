@@ -1,12 +1,19 @@
 "use client"
 
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux"
 
 export default function CartCount(){
+    const [isHydrated, setIsHydrated] = useState(false)
     const cart = useSelector((state) => state.cart);
     const {cartItems} = cart
     const itemCount = cartItems.length
 
+    useEffect(() => {
+        setIsHydrated(true)
+    }, [])
+
+    if (!isHydrated) return <></>
     return (
         <div className="relative">
             <button className="relative flex items-center p-2 text-white">

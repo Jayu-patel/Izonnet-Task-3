@@ -118,10 +118,10 @@ export default function Checkout() {
   },[])
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg flex gap-6">
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg flex gap-6 medium:flex-col-reverse">
 
       <div className="w-2/3">
-        <h2 className="text-2xl font-semibold mb-4">Checkout</h2>
+        <h2 className="text-2xl font-semibold mb-4 medium:text-3xl">Checkout</h2>
         
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Email Address</label>
@@ -163,7 +163,7 @@ export default function Checkout() {
         </div>
       </div>
       
-      <div className="w-1/3 p-4 border rounded-md h-96 overflow-y-auto">
+      <div className="w-1/3 p-4 border rounded-md h-96 overflow-y-auto medium:w-full medium:h-auto">
         <h3 className="text-xl font-semibold mb-2">Cart Summary</h3>
         <h2 className="text-lg font-semibold mb-2">Total: ₹{getTotalPrice().toFixed(2)}</h2>
         {

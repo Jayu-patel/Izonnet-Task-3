@@ -33,7 +33,7 @@ const Product = ({params}) => {
 
   if(loading) return <Loader/>
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="w-[100vw] medium:w-[95vw] mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
          <div className="mx-auto">
@@ -46,7 +46,7 @@ const Product = ({params}) => {
             {
               product?.imageList?.map((e,i)=>{
                 return(
-                  <div key={i} className='w-[120px] h-[100px] cursor-pointer' onClick={()=>{setImage(e)}}>
+                  <div key={i} className='w-[120px] medium:w-[80px] medium:h-[60px] h-[100px] cursor-pointer' onClick={()=>{setImage(e)}}>
                     <img src={e} alt="image" className='w-full h-full object-cover' />
                   </div>
                 )
