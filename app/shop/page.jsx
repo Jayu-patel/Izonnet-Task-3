@@ -203,7 +203,7 @@ function page() {
                                             <input
                                                 type="radio"
                                                 value={""}
-                                                name='options'
+                                                name='options3'
                                                 onChange={handleCategory}
                                                 checked={categoryQuery == ""}
                                             />
@@ -220,7 +220,7 @@ function page() {
                                                         <input
                                                             type="radio"
                                                             value={e._id}
-                                                            name='options'
+                                                            name='options3'
                                                             onChange={handleCategory}
                                                             checked={categoryQuery == e._id}
                                                         />
@@ -241,7 +241,7 @@ function page() {
                                         <input
                                             type="radio"
                                             value={-1}
-                                            name='options2'
+                                            name='options4'
                                             onChange={handlePrice}
                                             checked={priceArrNum == -1}
                                         />
@@ -258,7 +258,7 @@ function page() {
                                                     <input
                                                         type="radio"
                                                         value={i}
-                                                        name='options2'
+                                                        name='options4'
                                                         onChange={handlePrice}
                                                         checked={priceArrNum == i}
                                                     />
