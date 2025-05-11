@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import Link from "next/link";
 import { useState } from "react";
@@ -7,108 +7,140 @@ import axios from "axios";
 import { useDispatch } from "react-redux"; 
 import { setCredentials } from "../redux/slice/userSlice";
 import { toast } from "react-toastify";
+import LockIcon from '@mui/icons-material/Lock';
+import { Avatar, TextField, IconButton, InputAdornment, Button } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+ 
+export default function Register(){
 
-export default function RegisterForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false)
+    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confPassword, setConPassword] = useState("");
+    const [loading, setLoading] = useState(false)
 
-  const dispatch = useDispatch()
-  const router = useRouter();
+    const dispatch = useDispatch()
+    const router = useRouter();
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const handleSubmit = async () => {
-    if(!email && !password && !name) return setError("Please fill all fields")
-    if(!email) return setError("Please enter your email")
-    if(!name) return setError("Please enter your name")
-    if(!password) return setError("Please enter your password")
-
-    if(name.includes(" ")) return setError("There should no blank space in your name")
-    if(email.includes(" ") || !emailRegex.test(email)) return setError("Please enter a valid email address.")
-    if(password.includes(" ") || password.length < 5) return setError("Password must be at least 5 characters long.")
-
-    setLoading(true)
-    // axios.post("http://localhost:8000/api/user/register",{
-    axios.post("/api/user/register",{
-      username: name,
-      email,
-      password
-    }).then((res)=>{
-      if(res.status !== 201){
-        toast.error(res.data.message)
-        return setError(res.data.message);
-      }
-      else{
-        toast.success("Profile created successfully!")
-        dispatch(setCredentials(res.data));
-
-        setEmail("");
-        setPassword("");
-        setName("")
-        setError("")
-        router.push("/dashboard/profile")
-      }
-      setLoading(false)
-    }).catch(err=>{
-      if(err?.response?.data?.message){
-        toast.error(err?.response?.data?.message)
-        setError(err?.response?.data?.message);
-        setLoading(false)
-      }
+    const [errorBool, setErrorBool] = useState({
+        username: false, email: false, password: false, confPassword: false
     })
-  };
 
-  return (
-    <div className="grid place-items-center h-[calc(100vh-64px)] medium:block medium:mt-12">
-      <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400 medium:w-[90%] mx-auto">
-        <h1 className="text-xl font-bold my-4">Register</h1>
+    const [errorList, setErrorList] = useState({
+        username: "", email: "", password: "", confPassword: ""
+    })
 
-        <div className="flex flex-col gap-3">
-          <input
-            className="inp"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            placeholder="Name"
-          />
-          <input
-            className="inp"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            placeholder="Email"
-          />
-          <input
-            className="inp"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
-          />
-          {
-            loading ?
-            <button disabled className="bg-green-700 text-white font-bold cursor-pointer px-6 py-2">
-              Loading...
-            </button> :
-            <button onClick={handleSubmit} className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">
-              Register
-            </button>
-          }
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
 
-          {error && (
-            <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
-              {error}
+    const handleTogglePassword = () => {
+        setShowPassword((prev) => !prev);
+    };
+
+    const handleTogglePassword2 = () => {
+        setShowPassword2((prev) => !prev);
+    };
+
+    const handleSubmit=async()=>{
+        if(!username){setErrorBool(prev=>({...prev, username: true})); setErrorList(prev=>({...prev, username: "Please Enter Username"})); return}
+        if(username.includes(" ")) {setErrorBool(prev=>({...prev, username: true})); setErrorList(prev=>({...prev, username: "Username cannot contain spaces. Please use only letters, numbers, or allowed symbols"})); return}
+        setErrorBool(prev=>({...prev, username: false})); setErrorList(prev=>({...prev, username: ""}))
+
+        if(!email){setErrorBool(prev=>({...prev, email: true})); setErrorList(prev=>({...prev, email: "Please Enter Email"})); return}
+        if(email.includes(" ") || !emailRegex.test(email)){setErrorBool(prev=>({...prev, email: true})); setErrorList(prev=>({...prev, email: "Please enter a valid email address."})); return}
+        setErrorBool(prev=>({...prev, email: false})); setErrorList(prev=>({...prev, email: ""}))
+
+        if(!password){setErrorBool(prev=>({...prev, password: true})); setErrorList(prev=>({...prev, password: "Please Enter Password"})); return}
+        if(password.includes(" ")){setErrorBool(prev=>({...prev, password: true})); setErrorList(prev=>({...prev, password: "Passwod cannot contain spaces"})); return}
+        if(password.length < 5){setErrorBool(prev=>({...prev, password: true})); setErrorList(prev=>({...prev, password: "Password must be at least 5 characters long."})); return}
+        setErrorBool(prev=>({...prev, password: false})); setErrorList(prev=>({...prev, password: ""}))
+
+        if(!confPassword || (password != confPassword)){setErrorBool(prev=>({...prev, confPassword: true})); setErrorList(prev=>({...prev, confPassword: "Please Confirm password"})); return}
+        setErrorBool(prev=>({...prev, confPassword: false})); setErrorList(prev=>({...prev, confPassword: ""}))
+
+        setLoading(true)
+            // axios.post("http://localhost:8000/api/user/register",{
+        axios.post("/api/user/register",{
+            username,
+            email,
+            password
+        }).then((res)=>{
+            if(res.status !== 201){
+                return toast.error(res.data.message)
+            }
+            else{
+                toast.success("Profile created successfully!")
+                dispatch(setCredentials(res.data));
+    
+                setUsername("")
+                setEmail("")
+                setPassword("")
+                setConPassword("")
+                router.push("/dashboard/profile")
+            }
+            setLoading(false)
+        }).catch(err=>{
+            if(err?.response?.data?.message){
+            toast.error(err?.response?.data?.message)
+            setLoading(false)
+        }
+        })
+
+    }
+
+    return(
+        <div>
+            <div className="w-[340px] h-[75vh] p-5 my-6 mx-auto shadow-[0px_6px_6px_-3px_rgba(0,0,0,0.2),0px_10px_14px_1px_rgba(0,0,0,0.14),0px_4px_18px_3px_rgba(0,0,0,0.12)]">
+                <div className="w-full grid place-items-center">
+                    <Avatar style={{backgroundColor: 'green'}}><LockIcon/></Avatar>
+                    <h1 className="p-2 text-[2rem] font-bold">Sign Up</h1>
+                </div>
+                <div>
+                    <TextField value={username} onChange={e=>setUsername(e.target.value)} label="Username" placeholder="Enter username" fullWidth required className="" error={errorBool.username} helperText={errorList.username?? ""} />
+                    <TextField value={email} onChange={e=>setEmail(e.target.value)} label="Email" placeholder="Enter email" fullWidth required style={{margin: "16px auto"}} error={errorBool.email} helperText={errorList.email?? ""} />
+                    <TextField value={password} onChange={e=>setPassword(e.target.value)} label="Password" placeholder="Enter password" fullWidth required style={{marginBottom: "16px"}}
+                        helperText={errorList.password?? ""}
+                        error={errorBool.password}
+                        type={showPassword ? 'text' : 'password'}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={handleTogglePassword} edge="end">
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                    />
+                    <TextField value={confPassword} onChange={e=>setConPassword(e.target.value)} label="Confirm password" placeholder="Confirm password" fullWidth required 
+                        helperText={errorList.confPassword?? ""}
+                        error={errorBool.confPassword}
+                        type={showPassword2 ? 'text' : 'password'}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={handleTogglePassword2} edge="end">
+                                {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                    />
+                    {
+                        loading ?
+                        <Button onClick={handleSubmit} className="mt-4" type="submit" variant="contained" color="inherit" fullWidth>Loading...</Button> :
+                        <Button onClick={handleSubmit} className="mt-4" type="submit" variant="contained" color="primary" fullWidth>Sign up</Button>
+                    }
+                    <div className="mt-3">
+                        <span>
+                            Already have an account?
+                        </span>
+                        <Link className="underline text-blue-500 ml-2" href="/login">Sign in</Link>
+                    </div>
+                </div>
             </div>
-          )}
-
-          <Link className="text-sm mt-3 text-right" href={"/login"} prefetch={false}>
-            Already have an account? <span className="underline">Login</span>
-          </Link>
         </div>
-      </div>
-    </div>
-  );
+    )
 }
