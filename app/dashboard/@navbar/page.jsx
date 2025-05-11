@@ -6,7 +6,6 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from "react";
 
@@ -43,7 +42,9 @@ export default function NavbarDashboard(){
         <div className={`large:w-64 ${sliderWid} h-screen fixed bg-blue-600 text-white flex flex-col z-50`}>
             <div className="p-4 font-bold text-xl"> 
                 <span className="flex">
-                    <MenuIcon className="block large:hidden" sx={{marginRight: "10px"}} onClick={slide}/> 
+                    <span className="large:hidden">
+                        <MenuIcon sx={{marginRight: "10px"}} onClick={slide}/> 
+                    </span>
                     <span className={`block ${linkCss}`}>Dashboard</span>
                 </span>
             </div>
@@ -72,7 +73,9 @@ export default function NavbarDashboard(){
             <div>
                 <div className="p-4 font-bold text-xl">
                     <span className="flex">
-                        <MenuIcon className="large:hidden" sx={{marginRight: "10px"}} onClick={slide}/> 
+                        <span className="large:hidden">
+                            <MenuIcon sx={{marginRight: "10px"}} onClick={slide}/> 
+                        </span>
                         <span className={`block ${linkCss}`}>Dashboard</span>
                     </span>
                 </div>
