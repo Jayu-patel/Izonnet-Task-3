@@ -6,17 +6,33 @@ import { toast } from "react-toastify";
 import {loadStripe} from "@stripe/stripe-js"
 import axios from "axios";
 import { clearCartItems } from "../redux/slice/cartSlice";
-
-const indianStates = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
-];
+import {State, City} from "country-state-city"
 
 export default function Checkout() {
+  const [hyd, setHyd] = useState(false)
   const {userInfo} = useSelector(s=> s?.auth)
   const cart = useSelector((state) => state.cart);
   const {cartItems} = cart
   const dispatch = useDispatch()
   const router = useRouter();
+
+  const [states, setStates] = useState(State.getStatesOfCountry("IN"))
+  const [cities, setCities] = useState([])
+
+  const [selectedState, setSelectedState] = useState(null)
+  const [selectedCity, setSelectedCity] = useState(null)
+
+  const handleStateChange =(state)=>{
+    setSelectedState(state)
+    setCities(City.getCitiesOfState("IN",state.isoCode))
+    setSelectedCity(null)
+    setFormData({...formData, state: state.name})
+  }
+
+  const handleCityChange=(city)=>{
+    setSelectedCity(city)
+    setFormData({...formData, city: city.name})
+  }
   
   const [formData, setFormData] = useState({
     email: userInfo?.email || "",
@@ -72,17 +88,17 @@ export default function Checkout() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleSubmit = () => {
-    const {email, fullName, mobile, address, city, state, zip} = formData
+    const {email, fullName, mobile, address, zip} = formData
     
+    if(!fullName){ return toast.error("Enter your name")}
     if(!email){ return toast.error("Enter your email") }
     if(email.includes(" ") || !emailRegex.test(email)) {return toast.error("Please enter a valid email address.")}
     if(mobile.length < 10 || mobile.length > 10){ return toast.error("Enter valid mobile number")}
+    if(!selectedState){ return toast.error("Select your state")}
+    if(!selectedCity){ return toast.error("Select your city")}
     if(!zip){ return toast.error("Enter zip code")}
     if(zip.length < 6 || zip.length > 6){ return toast.error("Enter valid zip code")}
-    if(!fullName){ return toast.error("Enter your name")}
     if(!address){ return toast.error("Enter your address")}
-    if(!city){ return toast.error("Enter your city")}
-    if(!state){ return toast.error("Enter your state")}
 
     createOrder()
     makePayment()
@@ -117,6 +133,10 @@ export default function Checkout() {
     }
   },[])
 
+  useEffect(()=>{
+    setHyd(true)
+  },[])
+  if(!hyd) return <></>
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg flex gap-6 medium:flex-col-reverse">
 
@@ -141,20 +161,44 @@ export default function Checkout() {
           
           <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Full Name" className="w-full p-2 border rounded-md" required />
           <input type="number" name="mobile" value={formData.mobile} onChange={handleChange} placeholder="Mobile Number" className="w-full p-2 border rounded-md" required />
-          <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="w-full p-2 border rounded-md" required />
-          <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="w-full p-2 border rounded-md" required />
-          
-          <select name="state" value={formData.state} onChange={handleChange} className="w-full p-2 border rounded-md" required>
+        
+          <select 
+            className="w-full p-2 border rounded-md"
+            onChange={e=>{
+              handleStateChange(states.find((s) => s.isoCode === e.target.value))
+            }}
+          >
             <option value="">Select State</option>
-            {indianStates.map((state) => (
-              <option key={state} value={state}>{state}</option>
-            ))}
+            {
+              states.map((state)=>(
+                <option key={state.isoCode} value={state.isoCode}>
+                  {state.name}
+                </option>
+              ))
+            }
           </select>
-          
+
+          <select 
+            disabled={!selectedState} 
+            className="w-full p-2 border rounded-md"
+            onChange={e=>{
+              handleCityChange(cities.find((c) => c.name === e.target.value))
+            }}
+          >
+            <option value="">Select City</option>
+            {
+              cities.map((city)=>(
+                <option key={city.name} value={city.name}>
+                  {city.name}
+                </option>
+              ))
+            }
+          </select>
+
           <input type="number" name="zip" value={formData.zip} onChange={handleChange} placeholder="ZIP Code" className="w-full p-2 border rounded-md" required />
-          
-          <input type="text" name="country" value={formData.country} readOnly className="w-full p-2 border rounded-md bg-gray-100" />
-          
+          <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="w-full p-2 border rounded-md" required />
+
+                    
           <button onClick={handleSubmit} className="w-full p-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
             {
               loading ? "processing..." : "Place Order"
