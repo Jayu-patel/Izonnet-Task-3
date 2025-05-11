@@ -6,105 +6,117 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useDispatch } from "react-redux"; 
 import { setCredentials } from "../redux/slice/userSlice";
+import { toast } from "react-toastify";
+import LockIcon from '@mui/icons-material/Lock';
+import { Avatar, TextField, IconButton, InputAdornment, Button } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+ 
+export default function Login(){
 
-export default function LoginForm(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false)
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const dispatch = useDispatch()
     const router = useRouter();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const [showPassword, setShowPassword] = useState(false);
 
-    const handleSubmit = async () => {
-        if(!email && !password) return setError("Please enter email and password")
-        if(!email) return setError("Please enter your email")
-        if(!password) return setError("Please enter your password")
+    const [errorBool, setErrorBool] = useState({
+        email: false, password: false
+    })
 
-        if(email.includes(" ") || !emailRegex.test(email)) return setError("Please enter a valid email address.")
-        if(password.includes(" ") || password.length < 5) return setError("Password must be at least 5 characters long.")
-        
-        try{
-          setLoading(true)
-          // axios.post("http://localhost:8000/api/user/login",{
-          axios.post("/api/user/login",{
+    const [errorList, setErrorList] = useState({
+        email: "", password: ""
+    })
+
+    const handleTogglePassword = () => {
+        setShowPassword((prev) => !prev);
+    };
+
+    const handleSubmit=async()=>{
+        if(!email){setErrorBool(prev=>({...prev, email: true})); setErrorList(prev=>({...prev, email: "Please Enter Email"})); return}
+        if(email.includes(" ") || !emailRegex.test(email)){setErrorBool(prev=>({...prev, email: true})); setErrorList(prev=>({...prev, email: "Please enter a valid email address."})); return}
+        setErrorBool(prev=>({...prev, email: false})); setErrorList(prev=>({...prev, email: ""}))
+
+        if(!password){setErrorBool(prev=>({...prev, password: true})); setErrorList(prev=>({...prev, password: "Please Enter Password"})); return}
+        if(password.includes(" ")){setErrorBool(prev=>({...prev, password: true})); setErrorList(prev=>({...prev, password: "Passwod cannot contain spaces"})); return}
+        if(password.length < 5){setErrorBool(prev=>({...prev, password: true})); setErrorList(prev=>({...prev, password: "Password must be at least 5 characters long."})); return}
+        setErrorBool(prev=>({...prev, password: false})); setErrorList(prev=>({...prev, password: ""}))
+
+        setLoading(true)
+        axios.post("/api/user/login",{
             email,
             password
-          }).then((res)=>{
-            if(res.status !== 201){
-              setError(res.data.message);
-            }
-            else{
-              dispatch(setCredentials(res.data));
-              
-              setEmail("");
-              setPassword("");
-              setError("")
-              router.push("/dashboard/profile")
-            }
-            setLoading(false)
-          }).catch((err) =>{
+        }).then((res)=>{
+        if(res.status !== 201){
+            toast.error(res.data.message);
+        }
+        else{
+            dispatch(setCredentials(res.data));
+            
+            setEmail("");
+            setPassword("");
+            router.push("/dashboard/profile")
+        }
+        setLoading(false)
+        }).catch((err) =>{
             if(err?.response?.data?.message){
-              setError(err?.response?.data?.message);
-              setLoading(false)
+                toast.error(err?.response?.data?.message);
+                setLoading(false)
             }
-          })
-        }
-        catch(error){
-          if (error.response) {
-            // console.error(`Request failed with status: ${error.response.status}`);
-          } else {
-            // console.error('Network error:', error.message);
-          }
-        }
-      };
-    
+        })
+
+    }
+
     return(
-    <div className="grid place-items-center h-[calc(100vh-64px)] medium:block medium:mt-12">
-      <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400 medium:w-[90%] mx-auto">
-        <h1 className="text-xl font-bold my-4">Login</h1>
+        <div>
+            <div className="w-[340px] h-[70vh] p-5 my-5 mx-auto shadow-[0px_6px_6px_-3px_rgba(0,0,0,0.2),0px_10px_14px_1px_rgba(0,0,0,0.14),0px_4px_18px_3px_rgba(0,0,0,0.12)]">
+                <div className="w-full grid place-items-center">
+                    <Avatar style={{backgroundColor: 'green'}}><LockIcon/></Avatar>
+                    <h1 className="p-2 text-[2rem] font-bold">Sign in</h1>
+                </div>
+                <div>
+                    <TextField 
+                        value={email} 
+                        onChange={e=>setEmail(e.target.value)} 
+                        label="Email" placeholder="Enter email" 
+                        fullWidth 
+                        required 
+                        style={{margin: "16px auto"}}
+                        error={errorBool.email}
+                        helperText={errorList.email ?? ""}
+                    />
+                    <TextField value={password} onChange={e=>setPassword(e.target.value)} label="Password" placeholder="Enter password" fullWidth required 
+                        error={errorBool.password}
+                        helperText={errorList.password ?? ""}
+                        type={showPassword ? 'text' : 'password'}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={handleTogglePassword} edge="end">
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                    />
 
-        <div className="flex flex-col gap-3">
-          <input
-            className="inp"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            placeholder="Email"
-          />
-          <input
-            className="inp"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
-          />
-          {
-            loading ?
-            <button disabled className="bg-green-700 text-white font-bold cursor-pointer px-6 py-2">
-              Loading...
-            </button> :
-            <button onClick={handleSubmit} className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">
-              Login
-            </button>
-          }
-          {error && (
-            <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
-              {error}
+                    {
+                        loading ?
+                        <Button onClick={handleSubmit} style={{margin: "16px auto"}} type="submit" variant="contained" color="inherit" fullWidth>Loading...</Button> :
+                        <Button onClick={handleSubmit} style={{margin: "16px auto"}} type="submit" variant="contained" color="primary" fullWidth>Sign in</Button>
+                    }
+                    <div className="mt-3">
+                        <Link className="underline text-blue-500 block py-2" href="/login/generateOtp">Forgot password?</Link>
+                        <span>
+                            Don't have an account?
+                        </span>
+                        <Link className="underline text-blue-500 ml-2" href="/register">Sign up</Link>
+                    </div>
+                </div>
             </div>
-          )}
-          <span className="flex justify-between"> 
-            <Link className="text-sm mt-3" href={"/login/generateOtp"} prefetch={false}>
-              Forgot password ? <span className="underline">Recover</span>
-            </Link>
-
-            <Link className="text-sm mt-3" href={"/register"} prefetch={false}>
-              Don't have an account? <span className="underline">Register</span>
-            </Link>
-          </span>
         </div>
-      </div>
-    </div>
-)}
+    )
+}
