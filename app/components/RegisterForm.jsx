@@ -130,8 +130,8 @@ export default function Register(){
                     />
                     {
                         loading ?
-                        <Button onClick={handleSubmit} className="mt-4" type="submit" variant="contained" color="inherit" fullWidth>Loading...</Button> :
-                        <Button onClick={handleSubmit} className="mt-4" type="submit" variant="contained" color="primary" fullWidth>Sign up</Button>
+                        <Button onClick={handleSubmit} style={{margin: "16px auto"}} type="submit" variant="contained" color="inherit" fullWidth>Loading...</Button> :
+                        <Button onClick={handleSubmit} style={{margin: "16px auto"}} type="submit" variant="contained" color="primary" fullWidth>Sign up</Button>
                     }
                     <div className="mt-3">
                         <span>
